@@ -1,0 +1,77 @@
+:root{
+  --bg: #f5f0ea;       /* 薄いベージュ背景 */
+  --panel: #ffffff;    /* カード色 */
+  --line: #e6e3df;     /* 区切り線 */
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin: 0;
+  background: var(--bg);
+  font-family: Arial, sans-serif;
+}
+
+/* ヘッダー：中央にサイト名、右上にlogin */
+.site-header{
+  position: relative;
+  padding: 28px 16px;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+
+.site-header .brand{
+  margin: 0;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+.site-header .brand a{
+  color: #333;
+  text-decoration: none;
+}
+
+.header-btn{
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+}
+
+/* 本文の横幅＆中央寄せ */
+.container-narrow{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 36px 16px 60px;
+}
+
+/* ページ見出し（Register / Login） */
+.page-title{
+  text-align: center;
+  font-size: 26px;
+  margin: 12px 0 18px;
+  color: #333;
+}
+
+/* カード */
+.form-card{
+  width: 520px;                /* 見本くらいの幅 */
+  margin: 0 auto;              /* 中央寄せ */
+  background: var(--panel);
+  border-radius: 8px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.08);
+  padding: 26px 28px 28px;
+}
+
+/* 入力まわり微調整 */
+.form-label{ color:#333; font-weight:600; }
+.form-control::placeholder{ color:#bbb; }
+.btn-dark{ border-radius:4px; display:block; margin-left:auto; margin-right:auto; }
+
