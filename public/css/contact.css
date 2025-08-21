@@ -1,0 +1,132 @@
+/* ===== Theme ===== */
+:root{
+  --brown:#6f5947;
+  --brown-dark:#5d4a3a;
+  --ink:#544646;
+  --muted:#9b8a7b;
+  --beige:#e9dbce;
+  --line:#e6e1d2;
+  --panel:#f5f3ef; /* 入力欄の薄グレー */
+  --danger:#c44a38;
+}
+
+*{box-sizing:border-box}
+body{
+  font-family: "Cormorant Garamond","Times New Roman",serif;
+  color:var(--ink);
+  letter-spacing:.02em;
+}
+
+/* レイアウト幅をギュッと：スクロール無しで見えるサイズ感 */
+.page.contact{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 16px 64px;
+}
+
+/* 見出し */
+.logo{
+  font-family: "Cormorant Garamond","Times New Roman",serif;
+  font-size: 32px;
+  text-align: center;
+  color: var(--brown);
+  margin: 8px 0 18px;
+}
+.page-title{
+  font-size: 26px;
+  text-align: center;
+  margin: 0 0 26px;
+}
+
+/* フォーム2カラム（左ラベル／右入力） */
+.form{
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  column-gap: 24px;
+  row-gap: 14px;      /* 余白を詰めて全体高さを低く */
+  align-items: center;
+}
+.form label{
+  color: var(--ink);
+}
+.form label.req::after{
+  content:" ※";
+  color: var(--danger);
+}
+
+/* 入力系共通：薄いグレーのパネル風 */
+.ipt{
+  width: 100%;
+  height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 4px;
+  outline: none;
+}
+.ipt:focus{
+  border-color: var(--brown);
+}
+
+/* 2カラムの名前欄 */
+.two-cols{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ラジオ */
+.radios{
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.radios input{ accent-color: var(--brown); }
+
+/* 電話番号（3分割） */
+.tel{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ipt-tel{
+  width: 140px;           /* 080/1234/5678 が綺麗に収まる */
+  text-align: center;
+}
+.sep{ color: var(--muted); }
+
+/* テキストエリア */
+.area{
+  height: 160px;
+  resize: vertical;
+}
+
+/* エラーメッセージ（バリデーション） */
+.err{
+  grid-column: 2 / -1;
+  margin: 6px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* ボタン */
+.form-actions{
+  grid-column: 1 / -1;
+  margin-top: 12px;
+  justify-content: center;
+  display: flex;
+}
+.btn{
+  display: inline-block;
+  min-width: 180px;
+  padding: 12px 20px;
+  border-radius: 4px;
+  border: 1px solid var(--brown);
+  background: var(--brown);
+  color: #fff;
+  font-weight: 600;
+}
+.btn:hover{ background: var(--brown-dark); border-color: var(--brown-dark); }
+
+/* プレースホルダーの色をうすく */
+::placeholder{ color:#b8b1a8; }

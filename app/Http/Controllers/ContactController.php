@@ -23,10 +23,11 @@ class ContactController extends Controller
     // ===== お問い合わせ：確認 =====
     public function confirm(ContactRequest $request)
     {
-        $inputs = $request->validated();        // 仕様のバリデーション
-        session(['contact_inputs' => $inputs]); // 戻った時に再表示できるよう保存
+        $inputs = $request->validated();
+        $categories = Category::orderBy('id')->get();
+        session(['contact_inputs' => $inputs]);
 
-        return view('admin.index', compact('inputs'));
+        return view('contact.confirm', compact('inputs'));
     }
 
     // ===== お問い合わせ：保存 → サンクス =====
