@@ -1,208 +1,172 @@
-<h1>管理画面</h1>
+@extends('layouts.app')
 
-{{-- 検索フォーム --}}
-<form method="GET" action="{{ route('admin.index') }}" style="margin-bottom: 16px;">
-  <input type="text" name="q" placeholder="名前やメールアドレスを入力してください" value="{{ request('q') }}">
-  <select name="gender">
-    <option value="">性別</option>
-    <option value="1" @selected(request('gender')==='1')>男性</option>
-    <option value="2" @selected(request('gender')==='2')>女性</option>
-    <option value="3" @selected(request('gender')==='3')>その他</option>
-  </select>
-  <select name="category_id">
-    <option value="">お問い合わせの種類</option>
-    @foreach($categories as $cat)
-      <option value="{{ $cat->id }}" @selected(request('category_id')==$cat->id)>{{ $cat->content }}</option>
-    @endforeach
-  </select>
-  <input type="date" name="date" value="{{ request('date') }}">
-  <button>検索</button>
-  <div class="toolbar" style="display:flex; justify-content:space-between; align-items:center; margin:8px 0 12px;">
-  {{-- ここにエクスポートや検索フォームがあるなら左側に置く --}}
-  <div></div>
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ filemtime(public_path('css/admin.css')) }}">
+@endpush
 
-  {{-- ページネーション --}}
-  <div class="pager">
-    {{ $contacts->withQueryString()->onEachSide(1)->links() }}
+@section('content')
+<div class="admin-wrap">
+
+  <h2 class="page-title">Admin</h2>
+
+  {{-- ===== 検索フォーム → ページネーション（この順で固定） ===== --}}
+  <div class="search-area">
+    <form method="GET" action="{{ route('admin.index') }}" class="search-row">
+      <input type="text" name="q" value="{{ request('q') }}" placeholder="名前やメールアドレスを入力してください">
+
+      @php $g = request()->has('gender') ? (string)request('gender') : null; @endphp
+      <select name="gender">
+        <option value="" disabled {{ $g===null ? 'selected' : '' }}>性別</option>
+        <option value="all" {{ $g==='all' ? 'selected' : '' }}>全て</option>
+        <option value="1"   {{ $g==='1'   ? 'selected' : '' }}>男性</option>
+        <option value="2"   {{ $g==='2'   ? 'selected' : '' }}>女性</option>
+        <option value="3"   {{ $g==='3'   ? 'selected' : '' }}>その他</option>
+      </select>
+
+      <select name="category_id">
+        <option value="">お問い合わせの種類</option>
+        @foreach($categories as $cat)
+          <option value="{{ $cat->id }}" {{ (string)request('category_id')===(string)$cat->id ? 'selected' : '' }}>
+            {{ $cat->content }}
+          </option>
+        @endforeach
+      </select>
+
+      <input type="date" name="date" value="{{ request('date') }}">
+
+      <div class="actions">
+        <button type="submit" class="btn primary">検索</button>
+        <a href="{{ route('admin.index') }}" class="btn ghost">リセット</a>
+      </div>
+    </form>
+
+    {{-- ★検索/リセットの直下にだけ表示（他の links(...) はプロジェクトから削除） --}}
+    <div class="pager-row">
+      {{ $contacts->withQueryString()->onEachSide(1)->links('vendor.pagination.admin') }}
+    </div>
   </div>
-</div>
-  <style>
-/* ▼ Laravelのpaginationブロック全体を中央配置に */
-nav[role="navigation"]{
-  display:flex;
-  justify-content:center;   /* 中央寄せ */
-  align-items:center;
-  margin: 16px 0 24px;
-  gap: 12px;
-}
 
-/* 「Showing 8 to 14 of 33 results」などの説明行を消す */
-nav[role="navigation"] > div:first-child{
-  display:none;
-}
-
-/* ul を横並びにして箇条書きの点を消す */
-nav[role="navigation"] ul{
-  display:inline-flex;
-  gap:6px;
-  list-style:none;
-  padding:0;
-  margin:0;
-}
-
-/* ページ番号の見た目を簡単に整える（必要なら調整してOK） */
-nav[role="navigation"] a,
-nav[role="navigation"] span{
-  display:inline-block;
-  padding:6px 10px;
-  border:1px solid #ddd;
-  border-radius:4px;
-  text-decoration:none;
-}
-
-/* 現在ページを反転 */
-nav[role="navigation"] span[aria-current="page"]{
-  background:#333; color:#fff; border-color:#333;
-}
-
-/* ← → のSVG矢印が巨大化している環境向けの保険 */
-nav[role="navigation"] svg{
-  width: 1em; height: 1em;   /* 文字サイズ相当に縮める */
-  vertical-align: -0.125em;
-}
-</style>
-  <a href="{{ route('admin.index') }}" style="margin-left:8px;">リセット</a>
-</form>
-
-{{-- エクスポート（絞り込み維持） --}}
-<form method="GET" action="{{ route('admin.export') }}" style="margin-bottom:12px;">
-  <input type="hidden" name="q" value="{{ request('q') }}">
-  <input type="hidden" name="gender" value="{{ request('gender') }}">
-  <input type="hidden" name="category_id" value="{{ request('category_id') }}">
-  <input type="hidden" name="date" value="{{ request('date') }}">
-  <button type="submit">エクスポート</button>
-</form>
-
-{{-- 一覧テーブル --}}
-<table border="1" cellpadding="6" cellspacing="0" width="100%">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>お名前</th>
-      <th>性別</th>
-      <th>メールアドレス</th>
-      <th>お問い合わせの種類</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <tbody>
-    @forelse($contacts as $c)
-      <tr data-row-id="contact-{{ $c->id }}">
-        <td>{{ $c->id }}</td>
-        <td>{{ $c->last_name }}　{{ $c->first_name }}</td>
-        <td>{{ ['','男性','女性','その他'][$c->gender] ?? '' }}</td>
-        <td>{{ $c->email }}</td>
-        <td>{{ optional($c->category)->content }}</td>
-        <td>
-          {{-- ★ 詳細ボタン（AJAXでモーダル表示）に統一 --}}
-          <button type="button" class="btn js-detail" data-id="{{ $c->id }}">詳細</button>
-        </td>
-      </tr>
-    @empty
-      <tr><td colspan="6">該当データがありません</td></tr>
-    @endforelse
-  </tbody>
-</table>
-{{-- ===================== モーダル枠 + JS（末尾に配置） ===================== --}}
-
-{{-- ※ レイアウトでcsrfメタを出していない場合のみ置く --}}
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-{{-- モーダル外枠 --}}
-<div id="detailModal" class="modal hidden">
-  <div class="modal-panel">
-    <button id="modalX" type="button" class="modal-close" aria-label="close">✕</button>
-    <div id="modalBody">読み込み中...</div>
+  {{-- エクスポート --}}
+  <div class="export-row">
+    <a class="btn ghost wide" href="{{ route('admin.export', request()->query()) }}">エクスポート</a>
   </div>
+
+  {{-- ===== 一覧 ===== --}}
+  <div class="table-box">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>お名前</th>
+          <th>性別</th>
+          <th>メールアドレス</th>
+          <th>お問い合わせの種類</th>
+          <th class="th-detail"></th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse($contacts as $c)
+          <tr>
+            <td>{{ $c->last_name }}　{{ $c->first_name }}</td>
+            <td>{{ ['','男性','女性','その他'][$c->gender ?? 0] }}</td>
+            <td>{{ $c->email }}</td>
+            <td class="nowrap">{{ optional($c->category)->content }}</td>
+            <td class="cell-actions">
+              <button type="button"
+                class="btn-detail"
+                data-id="{{ $c->id }}"
+                data-name="{{ $c->last_name }}　{{ $c->first_name }}"
+                data-gender="{{ ['','男性','女性','その他'][$c->gender ?? 0] }}"
+                data-email="{{ $c->email }}"
+                data-tel="{{ $c->tel ?? '' }}"
+                data-address="{{ $c->address ?? '' }}"
+                data-building="{{ $c->building ?? '' }}"
+                data-category="{{ optional($c->category)->content ?? '' }}"
+                data-content="{{ $c->detail ?? ($c->content ?? '') }}"
+              >詳細</button>
+            </td>
+          </tr>
+        @empty
+          <tr><td colspan="5" class="empty">該当データがありません</td></tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+
 </div>
 
-<style>
-.modal.hidden{ display:none; }
-.modal{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; z-index:1000;}
-.modal-panel{ background:#fff; width:min(800px,92%); max-height:85vh; overflow:auto; border-radius:10px; padding:28px 32px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,.2);}
-.modal-close{ position:absolute; right:14px; top:12px; border:none; background:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; }
-.modal-close:hover{ background:#f5f5f5; }
-.btn{ padding:.4rem .8rem; border:1px solid #ccc; background:#fff; cursor:pointer; }
-.btn-danger{ background:#b84a3a; color:#fff; border:none; padding:.55rem 1.2rem; border-radius:4px; }
-.detail-table{ width:100%; border-collapse:separate; border-spacing:0 14px; }
-.detail-table th{ width:28%; color:#86735e; text-align:left; }
-.detail-table td{ color:#433; }
-.detail-actions{ text-align:center; margin-top:24px; }
-</style>
+{{-- ===== 詳細モーダル（ヘッダーなし/区切り線なし/×で閉じる/削除） ===== --}}
+<div id="detailModal" class="modal">
+  <div class="modal__overlay" data-close="1"></div>
+  <div class="modal__panel" role="dialog" aria-modal="true">
+    <button class="modal__close" type="button" aria-label="閉じる" data-close="1">×</button>
 
+    <div class="modal__body">
+      <dl class="kv"><dt>お名前</dt><dd id="m-name"></dd></dl>
+      <dl class="kv"><dt>性別</dt><dd id="m-gender"></dd></dl>
+      <dl class="kv"><dt>メールアドレス</dt><dd id="m-email"></dd></dl>
+      <dl class="kv"><dt>電話番号</dt><dd id="m-tel"></dd></dl>
+      <dl class="kv"><dt>住所</dt><dd id="m-address"></dd></dl>
+      <dl class="kv"><dt>建物名</dt><dd id="m-building"></dd></dl>
+      <dl class="kv"><dt>お問い合わせの種類</dt><dd id="m-category" class="nowrap"></dd></dl>
+      <dl class="kv"><dt>お問い合わせ内容</dt><dd id="m-content" class="prewrap"></dd></dl>
+    </div>
+
+    <form id="deleteForm" method="POST" action="">
+      @csrf
+      @method('DELETE')
+      <button type="submit" class="btn danger center">削除</button>
+    </form>
+  </div>
+</div>
+@endsection
+
+@push('scripts')
 <script>
-const modal     = document.getElementById('detailModal');
-const modalBody = document.getElementById('modalBody');
-const csrf      = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+(function(){
+  const modal = document.getElementById('detailModal');
+  const delForm = document.getElementById('deleteForm');
 
-// 詳細（.js-detail）クリックで部分ビューを読んで差し込み
-document.addEventListener('click', async (e) => {
-  const btn = e.target.closest('.js-detail');
-  if (!btn) return;
+  function openModal(data){
+    document.getElementById('m-name').textContent    = data.name || '';
+    document.getElementById('m-gender').textContent  = data.gender || '';
+    document.getElementById('m-email').textContent   = data.email || '';
+    document.getElementById('m-tel').textContent     = data.tel || '';
+    document.getElementById('m-address').textContent = data.address || '';
+    document.getElementById('m-building').textContent= data.building || '';
+    document.getElementById('m-category').textContent= data.category || '';
+    document.getElementById('m-content').textContent = data.content || '';
 
-  const id  = btn.dataset.id;
-  const url = "{{ route('admin.show', ':id') }}".replace(':id', id);
+    // 名前付きルートで確実に DELETE 先を生成（web.php に admin.destroy が必要）
+    delForm.action = "{{ route('admin.destroy', ':id') }}".replace(':id', data.id);
 
-  modalBody.textContent = '読み込み中...';
-  modal.classList.remove('hidden');
-
-  try {
-    const res  = await fetch(url, { headers:{ 'X-Requested-With':'XMLHttpRequest' } });
-    const html = await res.text();
-    modalBody.innerHTML = html;
-  } catch (err) {
-    modalBody.innerHTML = '<p style="color:red;">読み込みに失敗しました。</p>';
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
   }
-});
-
-// モーダルを閉じる（✕ or 背景）
-modal.addEventListener('click', (e)=>{
-  if (e.target.id === 'modalX' || e.target.id === 'detailModal') {
-    modal.classList.add('hidden');
+  function closeModal(){
+    modal.classList.remove('is-open');
+    document.body.style.overflow = '';
   }
-});
 
-// モーダル内の削除ボタン（動的要素なのでデリゲート）
-modal.addEventListener('click', async (e)=>{
-  const del = e.target.closest('.js-delete');
-  if (!del) return;
-
-  if(!confirm('このお問い合わせを削除します。よろしいですか？')) return;
-
-  const id  = del.dataset.id;
-  const url = "{{ route('admin.destroy', ':id') }}".replace(':id', id);
-
-  try{
-    const res = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'X-CSRF-TOKEN': csrf,
-        'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json'
-      }
-    });
-    if (res.ok || res.status === 204) {
-      // 行を削除
-      const row = document.querySelector(`[data-row-id="contact-${id}"]`);
-      if (row) row.remove();
-      modal.classList.add('hidden');
-    } else {
-      alert('削除に失敗しました');
+  // 詳細/閉じる イベント委譲
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('.btn-detail');
+    if(btn){
+      openModal({
+        id:btn.dataset.id,
+        name:btn.dataset.name,
+        gender:btn.dataset.gender,
+        email:btn.dataset.email,
+        tel:btn.dataset.tel,
+        address:btn.dataset.address,
+        building:btn.dataset.building,
+        category:btn.dataset.category,
+        content:btn.dataset.content
+      });
     }
-  }catch(err){
-    alert('削除に失敗しました');
-  }
-});
+    if(e.target.closest('[data-close]') || e.target.classList.contains('modal__overlay')) closeModal();
+  });
+
+  window.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+})();
 </script>
-
-
+@endpush

@@ -1,0 +1,97 @@
+/* ===== Register page ===== */
+:root{
+  --brand-serif: "Cormorant Garamond","Times New Roman",serif;
+  --ink:#5d4f46;
+  --panel:#ffffff;
+  --beige:#ede3d7;
+  --line:#e6d3bf;
+  --btn:#7d6556;
+  --error: #e74c3c;
+}
+.error {
+    color: var(--error);
+}
+
+/* 画面のベース（ヘッダーは白、コンテンツ帯は薄ベージュ） */
+body{
+  background: #fff;
+}
+.page-wrap{
+  background: var(--beige);
+  /* ヘッダーの高さが約80px想定。必要なら数値を調整 */
+  min-height: calc(100vh - 80px);
+  padding: 40px 0 72px;
+}
+
+/* タイトル：ヘッダーと同じ書体・色 */
+.page-title{
+  font-family: var(--brand-serif);
+  color: var(--ink);
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-align: center;
+  margin: 14px 0 28px;
+}
+
+/* 白いカードのサイズを見本に寄せる */
+.register-card{
+  width: 540px;           /* 見本の横幅感に合わせる外枠 */
+  max-width: 92vw;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 48px 56px 56px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+/* 入力ブロックの幅を小さく & 中央寄せ（見本のバランス） */
+.form-inner{
+  width: 560px;         /* ←見本のフィールド幅 */
+  max-width: 100%;
+  margin: 0 auto;       /* 中央に寄せる */
+}
+
+/* ラベルと入力 */
+.form-row{ margin-bottom: 22px; }
+.label{
+  display: block;
+  margin-bottom: 8px;
+  color: #7b6a60;
+  font-size: 16px;
+  font-weight: 600;
+}
+.input{
+  width: 100%;
+  height: 46px;
+  border: 1px solid #eee7df;
+  background: #f4efea;    /* 見本の薄い入力背景 */
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #433b36;
+}
+.input::placeholder{ color: #b7a79c; }
+
+/* ボタンを中央に */
+.actions{
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+.btn-primary{
+  width: 120px;
+  height: 40px;
+  border: none;
+  border-radius: 6px;
+  background: var(--btn);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .08em;
+  cursor: pointer;
+}
+.btn-primary:hover{ filter: brightness(1.05); }
+
+/* 余白調整（カード下の白い帯が残らないように） */
+.footer-spacer{ height: 20px; }

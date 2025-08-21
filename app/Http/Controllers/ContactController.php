@@ -26,7 +26,7 @@ class ContactController extends Controller
         $inputs = $request->validated();        // 仕様のバリデーション
         session(['contact_inputs' => $inputs]); // 戻った時に再表示できるよう保存
 
-        return view('contact.confirm', compact('inputs'));
+        return view('admin.index', compact('inputs'));
     }
 
     // ===== お問い合わせ：保存 → サンクス =====
@@ -57,8 +57,10 @@ class ContactController extends Controller
     {
         $contact->load('category');
 
-        // resources/views/admin/partials/contact_detail.blade.php
-        return view('admin._show', compact('contact'));
+        if (request()->ajax()) {
+            return view('admin.show', compact('contact'));
+        }
+        abort(404);
     }
 
     // ===== CSVエクスポート（絞り込み状態のまま出力） =====

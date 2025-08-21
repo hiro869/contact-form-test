@@ -1,22 +1,46 @@
 @extends('layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/register.css') }}">
+@endpush
+
 @section('content')
+<div class="page-wrap"><!-- ← 背景ベージュ帯（高さを100vhまで） -->
+
   <h2 class="page-title">Register</h2>
 
-  <div class="form-card">
-    <form method="POST" action="{{ route('register') }}">
-      @csrf
+  <div class="register-card">
+    <div class="form-inner"><!-- ← フィールド群を少し小さく中央寄せ -->
 
-      <label class="form-label">お名前</label>
-      <input type="text" name="name" class="form-control" placeholder="例：山田 太郎" value="{{ old('name') }}">
+      <form method="POST" action="{{ route('register.store') }}">
+        @csrf
 
-      <label class="form-label mt-3">メールアドレス</label>
-      <input type="email" name="email" class="form-control" placeholder="例：test@example.com" value="{{ old('email') }}">
+        <div class="form-row">
+          <label class="label">お名前</label>
+          <input name="name" class="input" value="{{ old('name') }}" placeholder="例：山田　太郎">
+          @error('name') <p class="error">{{ $message }}</p> @enderror
+        </div>
 
-      <label class="form-label mt-3">パスワード</label>
-      <input type="password" name="password" class="form-control" placeholder="例：coachtecht06">
+        <div class="form-row">
+          <label class="label">メールアドレス</label>
+          <input name="email" class="input" value="{{ old('email') }}" placeholder="例：test@example.com">
+          @error('email') <p class="error">{{ $message }}</p> @enderror
+        </div>
 
-      <button class="btn btn-dark w-25 mt-4">登録</button>
-    </form>
+        <div class="form-row">
+          <label class="label">パスワード</label>
+          <input name="password" type="password" class="input" placeholder="例：coachtech06">
+          @error('password') <p class="error">{{ $message }}</p> @enderror
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">登録</button>
+        </div>
+      </form>
+
+    </div>
   </div>
+
+  <div class="footer-spacer"></div>
+</div>
 @endsection

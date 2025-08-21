@@ -22,6 +22,8 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(fn () => view('auth.login'));
         Fortify::registerView(fn () => view('auth.register'));
 
+        Fortify::createUsersUsing(\App\Actions\Fortify\CreateNewUser::class);
+
         // 登録成功後は /login に返す
         $this->app->singleton(RegisterResponse::class, function () {
             return new class implements RegisterResponse {

@@ -1,34 +1,51 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FashionablyLate</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <meta charset="utf-8">
+    <title>{{ $title ?? 'App' }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    @stack('styles')
 </head>
-<body>
+<body class="bg-beige">
 
-  {{-- ヘッダー --}}
-  <header class="site-header">
-    <h1 class="brand"><a href="{{ url('/') }}">FashionablyLate</a></h1>
+    @php
+        $currentRoute = Route::currentRouteName();
+        // ヘッダーを隠したいページ
+        $hideHeader = in_array($currentRoute, ['contact.thanks']);
+    @endphp
 
-    @guest
-      <a href="{{ route('login') }}" class="header-btn">login</a>
-    @endguest
+    @unless ($hideHeader)
+        <header class="app-header">
+            <div class="brand">FashionablyLate</div>
 
-    @auth
-      <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="header-btn">logout</button>
-      </form>
-    @endauth
-  </header>
+            <nav class="nav">
+                {{-- register ページ → login ボタン --}}
+                @if ($currentRoute === 'register')
+                    <a href="{{ route('login') }}">login</a>
 
-  {{-- 本文 --}}
-  <main class="container-narrow">
-    @yield('content')
-  </main>
+                {{-- login ページ → register ボタン --}}
+                @elseif ($currentRoute === 'login')
+                    <a href="{{ route('register') }}">register</a>
 
+                {{-- admin ページ → logout ボタン --}}
+                @elseif (Str::startsWith($currentRoute, 'admin'))
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="link-button">logout</button>
+                    </form>
+
+                {{-- contact.create / contact.confirm ページ → ボタンなし --}}
+                @elseif (in_array($currentRoute, ['contact.create', 'contact.confirm']))
+                    {{-- 何も表示しない --}}
+                @endif
+            </nav>
+        </header>
+    @endunless
+
+    <main class="container">
+        @yield('content')
+    </main>
+@stack('scripts')
 </body>
 </html>

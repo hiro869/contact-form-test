@@ -1,0 +1,81 @@
+/* 背景全体を薄いベージュに */
+body {
+    background-color: #ede3d7;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ログインカード全体 */
+.card {
+    background-color: #fff;
+    width: 400px;
+    margin: 80px auto;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* タイトル */
+.card-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #6b4f3a;
+    font-family: "Cormorant Garamond","Times New Roman",serif;
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* ラベル */
+.label {
+    display: block;
+    text-align: left;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #6b4f3a;
+}
+
+/* 入力欄 */
+.input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #f3f0ed; /* ← 薄いグレーの中の色 */
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* プレースホルダー文字色 */
+.input::placeholder {
+    color: #aaa;
+}
+
+/* エラーメッセージ */
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* ボタン */
+.btn {
+    background-color: #6b4f3a;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    width: 40%;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 30px;
+}
+
+.btn:hover {
+    background-color: #5a4130;
+}

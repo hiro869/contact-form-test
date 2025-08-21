@@ -1,32 +1,25 @@
 @extends('layouts.app')
 
-@section('title','Login')
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/login.css') }}">
+@endpush
 
 @section('content')
-<header class="auth-header">
-  <h1>FashionablyLate</h1>
-  <a href="{{ route('register') }}" class="link-btn">register</a>
-</header>
+    <h2 class="card-title">Login</h2>
+    
+    <div class="card">
+    <form method="POST" action="{{ route('login.store') }}" class="form">
+        @csrf
 
-<main class="auth-main">
-  <h2>Login</h2>
+        <label class="label">メールアドレス</label>
+        <input name="email" value="{{ old('email') }}" class="input" placeholder="例：test@example.com">
+        @error('email') <p class="error">{{ $message }}</p> @enderror
 
-  <form method="POST" action="{{ route('login') }}" class="auth-form">
-    @csrf
+        <label class="label">パスワード</label>
+        <input name="password" type="password" class="input" placeholder="例：coachtecht06">
+        @error('password') <p class="error">{{ $message }}</p> @enderror
 
-    <label>メールアドレス
-      <input type="email" name="email" value="{{ old('email') }}" placeholder="例：test@example.com">
-    </label>
-    @error('email') <p class="err">{{ $message }}</p> @enderror
-
-    <label>パスワード
-      <input type="password" name="password" placeholder="例：coachtech06">
-    </label>
-    @error('password') <p class="err">{{ $message }}</p> @enderror
-
-    <button type="submit" class="primary">ログイン</button>
-  </form>
-</main>
-
-{{-- register と同じ style を共有 --}}
+        <button type="submit" class="btn">ログイン</button>
+    </form>
+</div>
 @endsection
