@@ -1,0 +1,61 @@
+:root {
+  --brown: #826455;
+  --text: #3a332d;
+  --bg: #fff;
+}
+
+body {
+  font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 背景に透かし文字（ドーンと大きく） */
+body::before {
+  content: "Thank you";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 200px;              /* ← ドーンと大きく */
+  font-weight: bold;
+  font-family: "Times New Roman", Georgia, serif;  /* 上品な英字フォント */
+  color: rgba(0, 0, 0, 0.05);   /* 薄く透かす */
+  white-space: nowrap;
+  z-index: 0;
+}
+
+.thanks-wrap {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.thanks-message {
+  font-size: 22px;
+  margin-bottom: 30px;
+  color: var(--text);
+}
+
+.home-btn {
+  display: inline-block;
+  background: var(--brown);
+  color: #fff;
+  padding: 12px 40px;
+  border-radius: 3px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.home-btn:hover {
+  opacity: 0.8;
+}

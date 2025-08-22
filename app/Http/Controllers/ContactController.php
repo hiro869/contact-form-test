@@ -20,25 +20,49 @@ class ContactController extends Controller
         return view('contact.create', compact('defaults', 'categories'));
     }
 
-    // ===== お問い合わせ：確認 =====
-    public function confirm(ContactRequest $request)
-    {
-        $inputs = $request->validated();
-        $categories = Category::orderBy('id')->get();
-        session(['contact_inputs' => $inputs]);
+// app/Http/Controllers/ContactController.php
 
-        return view('contact.confirm', compact('inputs'));
-    }
+public function confirm(ContactRequest $request)
+{
+    $inputs = $request->validated();           // ← 実データ（保存用）
+    session(['contact_inputs' => $inputs]);    // ← 戻る用にも保持
 
-    // ===== お問い合わせ：保存 → サンクス =====
-    public function store(ContactRequest $request)
-    {
-        Contact::create($request->validated());
-        session()->forget('contact_inputs');
+    // 表示ラベルだけ作る（画面表示専用）
+    $genderMap = [1=>'男性', 2=>'女性', 3=>'その他'];
+    $category  = \App\Models\Category::find($inputs['category_id']);
 
-        return view('contact.thanks');
-    }
+    $viewData = [
+        'last_name'      => $inputs['last_name'],
+        'first_name'     => $inputs['first_name'],
+        'gender_label'   => $genderMap[$inputs['gender']] ?? '',
+        'email'          => $inputs['email'],
+        'tel'            => $inputs['tel'],
+        'address'        => $inputs['address'],
+        'building'       => $inputs['building'] ?? '',
+        'category_label' => $category->content ?? '',
+        'content'        => $inputs['detail'],   // 表示用は content
+    ];
 
+    // ← 画面には「表示用(viewData)」と「保存用(inputs)」の両方を渡す
+    return view('contact.confirm', [
+        'data'   => $viewData,
+        'inputs' => $inputs,
+    ]);
+}
+
+public function store(Request $request)
+{
+    // 確認画面からは session に入れておいた “保存用の実データ” を使う
+    $payload = session('contact_inputs');
+
+    abort_if(empty($payload), 419); // 直接叩かれた等の安全策
+
+    \App\Models\Contact::create($payload);     // ← $fillable を用意しておく
+    session()->forget('contact_inputs');
+
+    // 二重送信防止でリダイレクト
+    return redirect()->route('contact.thanks');
+}
     // ===== 管理一覧（検索 + ページネーション + 7件/ページ） =====
     public function admin(Request $request)
     {

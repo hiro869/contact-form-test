@@ -1,0 +1,70 @@
+:root{
+  --brown: #826455;
+  --line:  #eee4dd;
+  --text:  #3a332d;
+}
+
+.confirm-wrap{
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+}
+
+.page-title{
+  text-align: center;
+  font-size: 28px;
+  margin: 18px 0 28px;
+  color: var(--text);
+}
+
+/* テーブル */
+.kv{
+  width: 100%;
+  border: 1px solid var(--line);
+  border-collapse: collapse;
+  background: #fff;
+}
+.kv th, .kv td{
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+}
+.kv th{
+  width: 32%;
+  background: var(--brown);
+  color: #fff;
+  font-weight: 700;
+  text-align: left;
+}
+.kv td{
+  color: var(--text);
+  background: #fff;
+}
+
+/* ボタン */
+.actions{
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+.btn{
+  display: inline-block;
+  min-width: 160px;
+  padding: 12px 20px;
+  font-size: 16px;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn.primary{
+  background: var(--brown);
+  color: #fff;
+  border: none;
+}
+.btn.ghost{
+  background: #fff;
+  color: var(--brown);
+  border: 2px solid var(--brown);
+}

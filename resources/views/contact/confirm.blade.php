@@ -1,31 +1,31 @@
 @extends('layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/confirm.css') }}?v={{ filemtime(public_path('css/confirm.css')) }}">
+@endpush
+
 @section('content')
-<h2 class="page-title">確認</h2>
+<div class="confirm-wrap">
+  <h2 class="page-title">Confirm</h2>
 
-<form method="POST" action="{{ route('contact.store') }}" class="confirm-form">
-  @csrf
+  <table class="kv">
+    <tr><th>お名前</th><td>{{ $data['last_name'] }}　{{ $data['first_name'] }}</td></tr>
+    <tr><th>性別</th><td>{{ $data['gender_label'] }}</td></tr>
+    <tr><th>メールアドレス</th><td>{{ $data['email'] }}</td></tr>
+    <tr><th>電話番号</th><td>{{ $data['tel'] }}</td></tr>
+    <tr><th>住所</th><td>{{ $data['address'] }}</td></tr>
+    <tr><th>建物名</th><td>{{ $data['building'] ?: '（なし）' }}</td></tr>
+    <tr><th>お問い合わせの種類</th><td>{{ $data['category_label'] }}</td></tr>
+    <tr><th>お問い合わせ内容</th><td>{{ $data['content'] }}</td></tr>
+  </table>
 
-  {{-- 表示 --}}
-  <dl class="kv">
-    <dt>お名前</dt><dd>{{ $data['last_name'] }}　{{ $data['first_name'] }}</dd>
-    <dt>性別</dt><dd>{{ $data['gender_label'] }}</dd>
-    <dt>メールアドレス</dt><dd>{{ $data['email'] }}</dd>
-    <dt>電話番号</dt><dd>{{ $data['tel'] }}</dd>
-    <dt>住所</dt><dd>{{ $data['address'] }}</dd>
-    <dt>建物名</dt><dd>{{ $data['building'] ?? '（なし）' }}</dd>
-    <dt>お問い合わせの種類</dt><dd>{{ $data['category_label'] }}</dd>
-    <dt>お問い合わせ内容</dt><dd>{{ $data['content'] }}</dd>
-  </dl>
-
-  {{-- hidden で全値を送る --}}
-  @foreach($data as $k=>$v)
-    <input type="hidden" name="{{ $k }}" value="{{ $v }}">
-  @endforeach
-
-  <div class="submit-row">
-    <button type="submit" name="back" class="btn ghost">戻る</button>
+  <form method="POST" action="{{ route('contact.store') }}" class="actions">
+    @csrf
+    @foreach($data as $k => $v)
+      <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+    @endforeach
     <button type="submit" class="btn primary">送信</button>
-  </div>
-</form>
+    <a href="{{ route('contact.create') }}" class="btn ghost">修正</a>
+  </form>
+</div>
 @endsection
