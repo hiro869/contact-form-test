@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
+use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Support\Facades\Auth;
+
 
 // フロントのお問い合わせ（誰でも可）
 
@@ -19,3 +22,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/admin/contacts/{contact}',     [ContactController::class, 'destroy'])->name('admin.destroy');
     Route::get('/admin/export',           [ContactController::class, 'export'])->name('admin.export');
 });
+
+
+Route::post('/login', function (LoginRequest $request) {
+    $credentials = $request->only('email', 'password');
+
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
+        return redirect()->route('admin.index');  // ログイン後の遷移先（必要に応じて /admin などに変更）
+    }
+
+    return back()->withErrors([
+        'email' => 'ログイン情報が正しくありません。',
+    ]);
+})->name('login');

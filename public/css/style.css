@@ -35,14 +35,15 @@
 .nav .link-button{       /* logoutはform>button.link-button想定 */
   display:inline-block;
   margin-left:16px;      /* ← これでロゴと離れる＆リンク同士も間隔 */
-  padding:6px 10px;
+  padding:8px 17px;
   border:1px solid #e0d4c8;
   border-radius:4px;
   color:#7d6556;
   text-decoration:none;
   background: #f5f5f5;
   cursor:pointer;
-  font-size:14px;
+  font-size:16px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
 /* hover */
@@ -56,4 +57,5 @@
 .link-button{
   border:1px solid #e0d4c8;
   background:#fff;
+  font-family: "Cormorant Garamond","Times New Roman",serif;
 }

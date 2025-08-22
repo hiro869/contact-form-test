@@ -8,7 +8,7 @@
     <h2 class="card-title">Login</h2>
     
     <div class="card">
-    <form method="POST" action="{{ route('login.store') }}" class="form">
+    <form method="POST" action="{{ route('login') }}" class="form">
         @csrf
 
         <label class="label">メールアドレス</label>

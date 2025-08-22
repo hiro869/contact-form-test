@@ -8,8 +8,7 @@
     @stack('styles')
 </head>
 <body class="bg-beige">
-
-    @php
+@php
         $currentRoute = Route::currentRouteName();
         // ヘッダーを隠したいページ
         $hideHeader = in_array($currentRoute, ['contact.thanks']);
@@ -22,11 +21,11 @@
             <nav class="nav">
                 {{-- register ページ → login ボタン --}}
                 @if ($currentRoute === 'register')
-                    <a href="{{ route('login') }}">login</a>
+                    <a href="{{ route('login') }}" class="header-btn">login</a>
 
                 {{-- login ページ → register ボタン --}}
                 @elseif ($currentRoute === 'login')
-                    <a href="{{ route('register') }}">register</a>
+                    <a href="{{ route('register') }}" class="header-btn">register</a>
 
                 {{-- admin ページ → logout ボタン --}}
                 @elseif (Str::startsWith($currentRoute, 'admin'))
