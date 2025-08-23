@@ -50,7 +50,6 @@ MySQL 8.0
 Docker / Laravel Sail
 
 ## ER図
-
 erDiagram
   CATEGORIES ||--o{ CONTACTS : "has many"
 
@@ -63,14 +62,14 @@ erDiagram
 
   CONTACTS {
     BIGINT    id PK
-    BIGINT    category_id FK  "-> categories.id"
+    BIGINT    category_id FK
     VARCHAR   first_name
     VARCHAR   last_name
-    TINYINT   gender          "1:男性 2:女性 3:その他"
+    TINYINT   gender
     VARCHAR   email
-    VARCHAR   tel             "ハイフン無しで保存"
+    VARCHAR   tel
     VARCHAR   address
-    VARCHAR   building        "NULL可"
+    VARCHAR   building
     TEXT      detail
     TIMESTAMP created_at
     TIMESTAMP updated_at
@@ -84,6 +83,8 @@ erDiagram
     TIMESTAMP created_at
     TIMESTAMP updated_at
   }
+
+  CONTACTS }o--|| CATEGORIES : "belongs to"
 
 ## URL
 
