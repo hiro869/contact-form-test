@@ -1,10 +1,11 @@
 # お問い合わせフォーム（確認テスト）
+
 ## 環境構築
-1.準備
+1.プロジェクト作成
 composer create-project laravel/laravel contact-form
 cd contact-form
 
-2.Github リポジトリ作成
+2.GitHubリポジトリ作成
 git init
 git add .
 git commit -m "first commit"
@@ -12,56 +13,87 @@ git branch -M main
 git remote add origin https://github.com/hiro869/contact-form-test.git
 git push -u origin main
 
-3.laravel Sail　インストール
+3.Laravel sailインストール
 php artisan sail:install
-->mysqlを選択
+# → mysql を選択
 
-4.Dockerコンテナ起動
-./vendor/bin/sail up -d
-確認
-./vendor/bin/sail ps
-停止再起動
-./vendor/bin/sail down
+4.Docker コンテナ起動
 ./vendor/bin/sail up -d
 
-5.mysqlコンテナ起動確認
+5.MySQL 起動確認
 ./vendor/bin/sail logs mysql --tail=100
-問題がある場合はボリュームを削除して再作成
-./vendor/bin/sail down -v
-./vendor/bin/sail up -d
 
-6.laravelセットアップ
-.env設定例
+6.Laravel セットアップ
+.env 設定
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
 DB_DATABASE=laravel
-DB_USERNAME=【ユーザー名】
-DB_PASSWORD=【パスワード】
+DB_USERNAME=xxx
+DB_PASSWORD=xxx
+7.キャッシュクリア: ./vendor/bin/sail artisan config:clear
 
-キャッシュクリア
-./vendor/bin/sail artisan config:clear
-キー生成
-./vendor/bin/sail artisan key:generate
-7.マイグレーション＆シーディング
+キー生成: ./vendor/bin/sail artisan key:generate
+
+マイグレーション & シーディング
 ./vendor/bin/sail artisan migrate
 ./vendor/bin/sail artisan db:seed
 
-使用技術
+## 使用技術（実行環境）
 
-PHP 8.4
+PHP 8.2
+
 Laravel 12.x
+
 MySQL 8.0
+
 Docker / Laravel Sail
 
 ## ER図
 
+erDiagram
+  CATEGORIES ||--o{ CONTACTS : "has many"
+
+  CATEGORIES {
+    BIGINT    id PK
+    VARCHAR   content
+    TIMESTAMP created_at
+    TIMESTAMP updated_at
+  }
+
+  CONTACTS {
+    BIGINT    id PK
+    BIGINT    category_id FK  "-> categories.id"
+    VARCHAR   first_name
+    VARCHAR   last_name
+    TINYINT   gender          "1:男性 2:女性 3:その他"
+    VARCHAR   email
+    VARCHAR   tel             "ハイフン無しで保存"
+    VARCHAR   address
+    VARCHAR   building        "NULL可"
+    TEXT      detail
+    TIMESTAMP created_at
+    TIMESTAMP updated_at
+  }
+
+  USERS {
+    BIGINT    id PK
+    VARCHAR   name
+    VARCHAR   email
+    VARCHAR   password
+    TIMESTAMP created_at
+    TIMESTAMP updated_at
+  }
+
 ## URL
 
-## 補足
-課題の指示では「電話番号は5桁まで」と記載されていましたが,
-一般的な日本の電話番号仕様（固定電話は10桁、携帯電話は11桁）に合わせ、
-本実装では **10〜11桁の数字** を受け付ける仕様としました。
+開発環境: http://localhost
 
-※もし「5桁まで」という指示が「入力欄ごと（3分割のそれぞれが最大5桁）」という意味であれば、
-`digits_between` ではなく `max:5` を各分割入力に適用する形に変更可能です。
+補足
+
+課題の指示では「電話番号は5桁まで」とありましたが、
+日本の一般的な電話番号仕様（固定電話は10桁、携帯は11桁）に合わせて、
+10〜11桁の数字のみ を受け付ける仕様にしました。
+
+もし「5桁まで」の指示が「入力欄ごと（分割入力でそれぞれ最大5桁）」を意味する場合は、
+digits_between ではなく max:5 を各入力欄に適用すれば対応可能です。
