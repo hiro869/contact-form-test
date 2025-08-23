@@ -14,16 +14,18 @@
 .page-title{
   text-align: center;
   font-size: 28px;
-  margin: 18px 0 28px;
-  color: var(--text);
+  margin: 0px 0 50px;
+  color: var(--ink);
+  font-family: "Cormorant Garamond","Times New Roman",serif;
+
 }
 
 /* テーブル */
 .kv{
   width: 100%;
-  border: 1px solid var(--line);
   border-collapse: collapse;
   background: #fff;
+  border: 1px solid var(--line);
 }
 .kv th, .kv td{
   border: 1px solid var(--line);
@@ -66,5 +68,6 @@
 .btn.ghost{
   background: #fff;
   color: var(--brown);
-  border: 2px solid var(--brown);
+  text-decoration: underline;
+  border: none;
 }

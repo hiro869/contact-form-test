@@ -16,7 +16,7 @@ class ContactRequest extends FormRequest
         'first_name'  => ['required','string','max:255'],
         'gender'      => ['required','in:1,2,3'],
         'email'       => ['required','email','max:255'],
-        'tel'         => ['required','regex:/^\d{1,5}$/'], // 仕様どおり「5桁まで」
+        'tel'         => ['required','digits_between:10,11'], // 仕様どおり「5桁まで」
         'address'     => ['required','string','max:255'],  // ← これを1回だけ。配列で分割
         'building'    => ['nullable','string','max:255'],
         'category_id' => ['required','exists:categories,id'],
@@ -34,7 +34,7 @@ public function messages(): array
         'email.required'       => 'メールアドレスを入力してください。',
         'email.email'          => 'メールアドレスはメール形式で入力してください。',
         'tel.required'         => '電話番号を入力してください。',
-        'tel.regex'            => '電話番号は5桁までの数字で入力してください。',
+        'tel.digits_between'   => '電話番号は１０行または１１行の数字で入力してください。',
         'address.required'     => '住所を入力してください。',
         'category_id.required' => 'お問い合わせの種類を選択してください。',
         'category_id.exists'   => 'お問い合わせの種類を選択してください。',

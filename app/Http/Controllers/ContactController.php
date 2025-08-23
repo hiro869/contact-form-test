@@ -10,60 +10,62 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ContactController extends Controller
 {
-    // ===== お問い合わせ：入力 =====
+    /* =========================
+        フロント：入力 → 確認 → 保存
+       ========================= */
+
+    // 入力
     public function create()
     {
-        // 戻る時用の値保持
-        $defaults   = session('contact_inputs', []);
         $categories = Category::orderBy('id')->get();
-
-        return view('contact.create', compact('defaults', 'categories'));
+        return view('contact.create', compact('categories'));
     }
 
-// app/Http/Controllers/ContactController.php
+    // 確認
+    public function confirm(ContactRequest $request)
+    {
+        // バリデーション済みの実データ
+        $inputs = $request->validated();
 
-public function confirm(ContactRequest $request)
-{
-    $inputs = $request->validated();           // ← 実データ（保存用）
-    session(['contact_inputs' => $inputs]);    // ← 戻る用にも保持
+        // 念のため数字以外を除去
+        $inputs['tel'] = preg_replace('/\D/', '', $inputs['tel'] ?? '');
 
-    // 表示ラベルだけ作る（画面表示専用）
-    $genderMap = [1=>'男性', 2=>'女性', 3=>'その他'];
-    $category  = \App\Models\Category::find($inputs['category_id']);
+        // “修正”で戻れるように session に保持
+        session(['contact_inputs' => $inputs]);
 
-    $viewData = [
-        'last_name'      => $inputs['last_name'],
-        'first_name'     => $inputs['first_name'],
-        'gender_label'   => $genderMap[$inputs['gender']] ?? '',
-        'email'          => $inputs['email'],
-        'tel'            => $inputs['tel'],
-        'address'        => $inputs['address'],
-        'building'       => $inputs['building'] ?? '',
-        'category_label' => $category->content ?? '',
-        'content'        => $inputs['detail'],   // 表示用は content
-    ];
+        $category = Category::find($inputs['category_id']);
 
-    // ← 画面には「表示用(viewData)」と「保存用(inputs)」の両方を渡す
-    return view('contact.confirm', [
-        'data'   => $viewData,
-        'inputs' => $inputs,
-    ]);
-}
+        return view('contact.confirm', compact('inputs', 'category'));
+    }
 
-public function store(Request $request)
-{
-    // 確認画面からは session に入れておいた “保存用の実データ” を使う
-    $payload = session('contact_inputs');
+    // 保存（送信）
+    public function store(Request $request)
+    {
+        // 確認画面経由のデータのみ許可
+        $payload = session('contact_inputs');
+        abort_if(empty($payload), 419);
 
-    abort_if(empty($payload), 419); // 直接叩かれた等の安全策
+        Contact::create($payload);
 
-    \App\Models\Contact::create($payload);     // ← $fillable を用意しておく
-    session()->forget('contact_inputs');
+        // 使い終わったので破棄
+        session()->forget('contact_inputs');
 
-    // 二重送信防止でリダイレクト
-    return redirect()->route('contact.thanks');
-}
-    // ===== 管理一覧（検索 + ページネーション + 7件/ページ） =====
+        return redirect()->route('contact.thanks');
+    }
+
+    // 修正（入力へ戻る：old() に値を積む）
+    public function back(Request $request)
+    {
+        return redirect()
+            ->route('contact.create')
+            ->withInput($request->except('_token'));
+    }
+
+    /* =========================
+        管理画面
+       ========================= */
+
+    // 一覧（検索・ページネーション）
     public function admin(Request $request)
     {
         $categories = Category::orderBy('id')->get();
@@ -77,7 +79,7 @@ public function store(Request $request)
         return view('admin.index', compact('contacts', 'categories', 'request'));
     }
 
-    // ===== 詳細（モーダル用：中身だけ返す） =====
+    // 詳細（モーダルの中身だけ返す想定）
     public function show(Contact $contact)
     {
         $contact->load('category');
@@ -88,7 +90,7 @@ public function store(Request $request)
         abort(404);
     }
 
-    // ===== CSVエクスポート（絞り込み状態のまま出力） =====
+    // CSV エクスポート（現在の絞り込み条件のまま）
     public function export(Request $request): StreamedResponse
     {
         $rows = $this->adminQuery($request)
@@ -128,7 +130,7 @@ public function store(Request $request)
         }, 200, $headers);
     }
 
-    // ===== 削除（モーダル内の削除ボタンからのAJAX/通常遷移の両対応） =====
+    // 削除（AJAX/通常遷移 両対応）
     public function destroy(Contact $contact)
     {
         $contact->delete();
@@ -136,11 +138,12 @@ public function store(Request $request)
         if (request()->expectsJson() || request()->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->noContent(); // 204
         }
-
         return back()->with('status', '削除しました');
     }
 
-    // ===== 管理画面の検索条件（共通化：一覧/CSVで使い回し） =====
+    /* =========================
+        一覧/CSV 共通の検索条件
+       ========================= */
     private function adminQuery(Request $request)
     {
         $q          = $request->input('q');            // 氏名/メール（部分一致・フルネーム結合にも対応）

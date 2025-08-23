@@ -1,4 +1,4 @@
-/* ===== Theme ===== */
+/* ===== Theme Colors ===== */
 :root{
   --brown:#6f5947;
   --brown-dark:#5d4a3a;
@@ -10,14 +10,13 @@
   --danger:#c44a38;
 }
 
-*{box-sizing:border-box}
+*{ box-sizing:border-box }
 body{
   font-family: "Cormorant Garamond","Times New Roman",serif;
   color:var(--ink);
   letter-spacing:.02em;
 }
 
-/* レイアウト幅をギュッと：スクロール無しで見えるサイズ感 */
 .page.contact{
   max-width: 980px;
   margin: 0 auto;
@@ -25,25 +24,18 @@ body{
 }
 
 /* 見出し */
-.logo{
-  font-family: "Cormorant Garamond","Times New Roman",serif;
-  font-size: 32px;
-  text-align: center;
-  color: var(--brown);
-  margin: 8px 0 18px;
-}
 .page-title{
   font-size: 26px;
   text-align: center;
   margin: 0 0 26px;
 }
 
-/* フォーム2カラム（左ラベル／右入力） */
+/* フォーム 2カラム */
 .form{
   display: grid;
   grid-template-columns: 220px 1fr;
   column-gap: 24px;
-  row-gap: 14px;      /* 余白を詰めて全体高さを低く */
+  row-gap: 14px;
   align-items: center;
 }
 .form label{
@@ -54,7 +46,7 @@ body{
   color: var(--danger);
 }
 
-/* 入力系共通：薄いグレーのパネル風 */
+/* 入力共通 */
 .ipt{
   width: 100%;
   height: 44px;
@@ -64,11 +56,9 @@ body{
   border-radius: 4px;
   outline: none;
 }
-.ipt:focus{
-  border-color: var(--brown);
-}
+.ipt:focus{ border-color: var(--brown); }
 
-/* 2カラムの名前欄 */
+/* 名前 2カラム */
 .two-cols{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -83,14 +73,14 @@ body{
 }
 .radios input{ accent-color: var(--brown); }
 
-/* 電話番号（3分割） */
+/* 電話番号 */
 .tel{
   display: flex;
   align-items: center;
   gap: 10px;
 }
 .ipt-tel{
-  width: 140px;           /* 080/1234/5678 が綺麗に収まる */
+  width: 140px;
   text-align: center;
 }
 .sep{ color: var(--muted); }
@@ -101,7 +91,7 @@ body{
   resize: vertical;
 }
 
-/* エラーメッセージ（バリデーション） */
+/* エラー */
 .err{
   grid-column: 2 / -1;
   margin: 6px 0 0;
@@ -128,5 +118,31 @@ body{
 }
 .btn:hover{ background: var(--brown-dark); border-color: var(--brown-dark); }
 
-/* プレースホルダーの色をうすく */
+/* プレースホルダー色 */
 ::placeholder{ color:#b8b1a8; }
+
+/* セレクト調整 */
+.field--narrow { max-width: 360px; }
+
+.select{
+  width: 100%;
+  height: 44px;
+  padding: 10px 48px 10px 12px; /* 右にアイコン余白 */
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 4px;
+  outline: none;
+  color: var(--ink);
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23544646' width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px 20px;
+}
+
+/* 未選択時の「選択してください」を薄色に */
+.select.is-placeholder { color:#b8b1a8; }

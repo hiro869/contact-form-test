@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <title>{{ $title ?? 'App' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
     @stack('styles')
 </head>
 <body class="bg-beige">

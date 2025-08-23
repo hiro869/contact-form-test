@@ -13,6 +13,7 @@ Route::get('/',[ContactController::class, 'create'])->name('contact.create');
 Route::post('/confirm',[ContactController::class, 'confirm'])->name('contact.confirm');
 Route::post('/thanks', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/thanks',  fn() => view('contact.thanks'))->name('contact.thanks');
+Route::post('/back',[ContactController::class, 'back'])->name('contact.back');
 
 
 // 管理画面（要ログイン）
