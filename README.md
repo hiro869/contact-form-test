@@ -50,42 +50,44 @@ MySQL 8.0
 Docker / Laravel Sail
 
 ## ER図
+
+```mermaid
 erDiagram
   CATEGORIES ||--o{ CONTACTS : "has many"
 
   CATEGORIES {
-    BIGINT    id PK
-    VARCHAR   content
+    BIGINT id PK
+    VARCHAR content
     TIMESTAMP created_at
     TIMESTAMP updated_at
   }
 
   CONTACTS {
-    BIGINT    id PK
-    BIGINT    category_id FK
-    VARCHAR   first_name
-    VARCHAR   last_name
-    TINYINT   gender
-    VARCHAR   email
-    VARCHAR   tel
-    VARCHAR   address
-    VARCHAR   building
-    TEXT      detail
+    BIGINT id PK
+    BIGINT category_id FK "-> categories.id"
+    VARCHAR first_name
+    VARCHAR last_name
+    TINYINT gender "1:男性 2:女性 3:その他"
+    VARCHAR email
+    VARCHAR tel "ハイフン無しで保存"
+    VARCHAR address
+    VARCHAR building "NULL可"
+    TEXT detail
     TIMESTAMP created_at
     TIMESTAMP updated_at
   }
 
   USERS {
-    BIGINT    id PK
-    VARCHAR   name
-    VARCHAR   email
-    VARCHAR   password
+    BIGINT id PK
+    VARCHAR name
+    VARCHAR email
+    VARCHAR password
     TIMESTAMP created_at
     TIMESTAMP updated_at
   }
 
   CONTACTS }o--|| CATEGORIES : "belongs to"
-
+```
 ## URL
 
 開発環境: http://localhost
